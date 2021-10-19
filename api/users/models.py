@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+from PIL import Image , ImageDraw
 # Create your models here.
 
 
@@ -42,6 +43,16 @@ GENDER_CHOICES = (
     ("Ж", "Женский"),
     
 )
+
+class Watermark(object):
+    def process(self, image):
+        draw = ImageDraw.Draw(image)
+        draw.line((0, 0) + image.size, fill=128)
+        draw.line((0, image.size[1], image.size[0], 0), fill=128)
+        return image
+                                
+
+
     
 class User(AbstractUser):
     username = None
@@ -53,7 +64,7 @@ class User(AbstractUser):
         default = 'М'
         )  
     avatar= ProcessedImageField(upload_to='avatars',
-                                           processors=[ResizeToFill(400, 400)],
+                                           processors=[ResizeToFill(400, 400), Watermark()],
                                            format='JPEG',
                                            options={'quality': 72})    
     USERNAME_FIELD = 'email'
