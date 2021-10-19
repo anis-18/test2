@@ -46,10 +46,14 @@ GENDER_CHOICES = (
 
 class Watermark(object):
     def process(self, image):
-        draw = ImageDraw.Draw(image)
-        draw.line((0, 0) + image.size, fill=128)
-        draw.line((0, image.size[1], image.size[0], 0), fill=128)
-        return image
+        width, height = image.size
+        position =(0,0)
+        image = image.convert("RGBA")
+        watermark = Image.open('media/apptrix.jpg').convert("RGBA")
+        transparent = Image.new('RGBA', (width, height), (0,0,0,0))
+        transparent.paste(image, (0,0))
+        transparent.paste(watermark, position, mask=watermark)
+        return transparent
                                 
 
 
@@ -67,6 +71,7 @@ class User(AbstractUser):
                                            processors=[ResizeToFill(400, 400), Watermark()],
                                            format='JPEG',
                                            options={'quality': 72})    
+    likes = models.ManyToManyField('User', blank=True, related_name="like")
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()

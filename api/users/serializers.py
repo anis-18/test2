@@ -5,10 +5,9 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
-        fields = ['id' , 'email', 'last_name', 'first_name' , 'gender' , 'avatar']
+        fields = ['id' , 'email', 'last_name', 'first_name' , 'gender' , 'avatar' , 'likes']
         
 class CrateUserSerializer(serializers.ModelSerializer):
     class Meta:

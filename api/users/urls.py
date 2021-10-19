@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserListView , CreateUserView 
+from .views import UserListView , CreateUserView , UserLikeView
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -10,6 +10,8 @@ urlpatterns = [
    
     path('create', CreateUserView.as_view()),
     path('list', UserListView.as_view()),
+    path('<str:pk>/match', UserLikeView.as_view()),
+
     
    
 

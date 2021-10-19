@@ -21,6 +21,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,9 +34,21 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'imagekit',
-    
+    'django_filters',
+    'corsheaders',
+   
+
     
 ]
+
+REST_FRAMEWORK = {
+   
+     'DEFAULT_FILTER_BACKENDS': [
+         'django_filters.rest_framework.DjangoFilterBackend'
+         ],
+    
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -43,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'api.urls'
