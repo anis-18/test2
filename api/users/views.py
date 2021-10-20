@@ -9,6 +9,7 @@ from django_filters import rest_framework as filters
 from rest_framework import permissions
 from django.http import HttpResponse
 import json
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -40,6 +41,16 @@ class UserLikeView(generics.RetrieveAPIView):
     def post(self, request, pk, format=None):
         user_to_like = User.objects.get(id=pk)
         user_to_like.likes.add(request.user.id)
+       
+        if user_to_like in request.user.likes.all():
+            send_mail(
+                    'Взаимная симпатия',
+                    'Вы понравились '+" " + str(user_to_like.first_name) + " " +'Почта участника: '+ str(user_to_like.email),
+                    'testanisapptrix18@yandex.ru',
+                    [request.user.email],
+                    fail_silently=True,
+                )
+        
         return  HttpResponse(json.dumps({'message': "user liked"}))
 
     

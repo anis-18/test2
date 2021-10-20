@@ -72,6 +72,8 @@ class User(AbstractUser):
                                            format='JPEG',
                                            options={'quality': 72})    
     likes = models.ManyToManyField('User', blank=True, related_name="like")
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()
