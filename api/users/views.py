@@ -10,22 +10,47 @@ from rest_framework import permissions
 from django.http import HttpResponse
 import json
 from django.core.mail import send_mail
+import django_filters.rest_framework
 
+from math import radians, degrees, sin, cos, asin, acos, sqrt
 
 # Create your views here.
 
 
-class UserFilter(filters.FilterSet):
-    
 
+
+
+def calculateDistance(lon1, lat1, lon2, lat2):
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    return 6371 * (
+        acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2))
+    )
+class CustomFilter(django_filters.rest_framework.DjangoFilterBackend):
+    def filter_queryset(self, request , queryset,view):
+        alluser = queryset
+        newQueryset = []
+        distparam = request.GET.get('distance')
+        if distparam and bool(int(distparam)):
+            for user in alluser:
+                current_user_long = request.user.Longitude
+                current_user_lat = request.user.Latitude
+                alluser_long = user.Longitude
+                alluser_lat = user.Latitude
+                distance = calculateDistance(current_user_long, current_user_lat, alluser_long, alluser_lat)
+                if distance > distparam:
+                    newQueryset.push(user)
+            return newQueryset
+        return queryset
+class UserFilter(filters.FilterSet):
     class Meta:
         model = User
-        fields =['gender', 'last_name', 'first_name']
+        fields =['gender', 'last_name', 'first_name' ]
 class UserListView(generics.ListAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filterset_class = UserFilter
+    filter_backends = CustomFilter
 
 
 class CreateUserView(generics.CreateAPIView):
