@@ -32,10 +32,10 @@ class CustomFilter(django_filters.rest_framework.DjangoFilterBackend):
         distparam = request.GET.get('distance')
         if distparam and bool(int(distparam)):
             for user in alluser:
-                current_user_long = request.user.Longitude
-                current_user_lat = request.user.Latitude
-                alluser_long = user.Longitude
-                alluser_lat = user.Latitude
+                current_user_long = request.user.longitude
+                current_user_lat = request.user.latitude
+                alluser_long = user.longitde
+                alluser_lat = user.latitude
                 distance = calculateDistance(current_user_long, current_user_lat, alluser_long, alluser_lat)
                 if distance > distparam:
                     newQueryset.push(user)
@@ -75,6 +75,15 @@ class UserLikeView(generics.RetrieveAPIView):
                     [request.user.email],
                     fail_silently=True,
                 )
+            send_mail(
+                'Взаимная симпатия',
+                'Вы понравились '+" " +
+                str(request.user.first_name) + " " +
+                'Почта участника: ' + str(request.user.email),
+                'testanisapptrix18@yandex.ru',
+                [user_to_like.email],
+                fail_silently=True,
+            )
         
         return  HttpResponse(json.dumps({'message': "user liked"}))
 
